@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "Se você usar este software, por favor cite-o como abaixo."
+authors:
+  - family-names: "Ranazzi Neto"
+    given-names: "Antonio"
+  - family-names: "Videira"
+    given-names: "Luis Victor Rosa de Almeida Santana"
+title: "TCC-Fatec-2026-Antonio-e-Luis-Victor-GraphRag"
+version: "1.0.0"
+date-released: "2026-11-10"
+repository-code: "https://github.com/LuisVictorVideira/TCC-Fatec-2026-Antonio-e-Luis-Victor-GraphRag"
