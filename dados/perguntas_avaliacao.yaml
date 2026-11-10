@@ -1,0 +1,1292 @@
+metadados:
+  descricao: >
+    Conjunto de avaliação: perguntas abertas, em inglês e em português, sobre administração
+    do SQL Server, com a resposta anotada nos trechos do corpus. Foram redigidas 32 perguntas
+    antes de qualquer consulta ao grafo; a A02 foi excluída porque a resposta está fora das
+    duas pastas do corpus, e restaram estas 31.
+  corpus: MicrosoftDocs/sql-docs, pastas relational-databases/ e t-sql/
+  corpus_commit: 928a038ddb0ec8229674c7d0dbe9e529cbd42024
+  impressao_digital_trechos: dfc1cb8893e7ad89b75df87b0da37983d59132d06670ce8364b683061e537b51
+  total: 31
+  grupos:
+    A: controle
+    B: impacto e dependência
+    C: pré-requisitos e restrições
+    D: comparação
+  campos: |
+    grupo: letra do id (A controle, B impacto e dependência, C pré-requisitos e restrições,
+      D comparação).
+    tipo: previsão feita antes da anotação (um_salto ou multi_salto).
+    categoria: fato, impacto, prerequisito ou comparacao.
+    escopo: resultado da anotação: um_trecho, multi_trecho_mesmo_doc ou multi_documento.
+      multi_documento só quando nenhum documento sozinho basta.
+    trivial_lexical: sim quando a pergunta nomeia o comando ou repete o título do documento,
+      ou da seção, onde está a resposta. É propriedade da redação, e não do desempenho de
+      um método. As não triviais formam o recorte principal da comparação.
+    componentes: o ouro, organizado por informação necessária. Cada componente traz os
+      trechos que contêm a informação, alternativos entre si: basta recuperar um.
+    chunks_ouro: a união dos trechos dos componentes.
+    chunks_apoio: trechos que ajudam, mas não bastam; bloco de sintaxe formal pode ser
+      apoio, mas não ouro.
+    resposta_resumo: resposta de referência, usada no julgamento das respostas.
+    verificado: sim nas 31; os scripts só usam as perguntas com verificado: sim.
+  aviso: >
+    Os chunk_id dependem da fragmentação. Valem para o corpus no commit acima, fragmentado
+    pelo chunking_e_mentions.py, cuja exportação tem a impressão digital acima.
+perguntas:
+- id: A01
+  grupo: A
+  pergunta_pt: Que permissão um usuário precisa ter para criar um índice em uma tabela?
+  pergunta_en: What permission does a user need to create an index on a table?
+  tipo: um_salto
+  categoria: fato
+  saltos_esperados: 1
+  justificativa_multihop: null
+  docs_candidatos:
+  - t-sql/statements/create-index-transact-sql.md
+  componentes:
+  - nome: 'permissão para criar o índice: ALTER na tabela ou view, ou a role db_ddladmin'
+    essencial: true
+    trechos:
+    - t-sql/statements/create-index-transact-sql.md#chunk21
+  chunks_ouro:
+  - t-sql/statements/create-index-transact-sql.md#chunk21
+  chunks_apoio: []
+  resposta_resumo: >
+    Requer a permissão ALTER sobre a tabela ou view, ou pertencer à role fixa de banco db_ddladmin.
+  verificado: sim
+  escopo: um_trecho
+  trivial_lexical: sim
+- id: A03
+  grupo: A
+  pergunta_pt: Um DBA quer reduzir as divisões de página em inserções num índice existente.
+    Que configuração trata disso, e quando ela passa a valer?
+  pergunta_en: A DBA wants to reduce page splits on inserts into an existing index. Which
+    setting addresses this, and when does it take effect?
+  tipo: multi_salto
+  categoria: impacto
+  saltos_esperados: 2
+  justificativa_multihop: >
+    A seção de considerações de desempenho identifica o fator de preenchimento como resposta
+    às divisões de página e dá a faixa recomendada; o momento em que o valor passa a valer
+    — criação ou reconstrução do índice — está na introdução do documento.
+  docs_candidatos:
+  - relational-databases/indexes/specify-fill-factor-for-an-index.md
+  componentes:
+  - nome: o fator de preenchimento reduz as divisões de página, na faixa de 70 a 95 por cento
+    essencial: true
+    trechos:
+    - relational-databases/indexes/specify-fill-factor-for-an-index.md#chunk1
+  - nome: o valor só é aplicado na criação ou na reconstrução do índice
+    essencial: true
+    trechos:
+    - relational-databases/indexes/specify-fill-factor-for-an-index.md#chunk0
+  chunks_ouro:
+  - relational-databases/indexes/specify-fill-factor-for-an-index.md#chunk1
+  - relational-databases/indexes/specify-fill-factor-for-an-index.md#chunk0
+  chunks_apoio:
+  - t-sql/statements/create-index-transact-sql.md#chunk2p1
+  - t-sql/statements/alter-index-transact-sql.md#chunk2p1
+  - relational-databases/indexes/reorganize-and-rebuild-indexes.md#chunk1
+  resposta_resumo: >
+    O fator de preenchimento. Reservar espaço livre nas páginas de nível folha reduz as divisões
+    de página; quando elas afetam o desempenho, a faixa indicada é de 70 a 95 por cento. O
+    valor só é aplicado na criação ou na reconstrução do índice, e não é mantido conforme
+    as linhas são inseridas — por isso, num índice existente, é preciso reconstruí-lo. A documentação
+    ressalva que a maioria das cargas vai melhor com o padrão de 100 e que reduzir o fator
+    aumenta espaço, memória e I/O.
+  verificado: sim
+  escopo: multi_trecho_mesmo_doc
+  trivial_lexical: nao
+- id: A04
+  grupo: A
+  pergunta_pt: Qual é o limite de tamanho da chave de um índice nonclustered no SQL Server
+    2016 e posteriores?
+  pergunta_en: What is the maximum key size for a nonclustered index in SQL Server 2016 and
+    later?
+  tipo: um_salto
+  categoria: fato
+  saltos_esperados: 1
+  justificativa_multihop: null
+  docs_candidatos:
+  - t-sql/statements/create-index-transact-sql.md
+  componentes:
+  - nome: limite de 1.700 bytes para a chave do nonclustered, a partir do SQL Server 2016
+    essencial: true
+    trechos:
+    - t-sql/statements/create-index-transact-sql.md#chunk11
+  chunks_ouro:
+  - t-sql/statements/create-index-transact-sql.md#chunk11
+  chunks_apoio: []
+  resposta_resumo: >
+    1.700 bytes. O limite do índice clustered é 900 bytes, e antes do SQL Server 2016 era
+    900 para os dois. Colunas incluídas (INCLUDE) não entram no cálculo do tamanho da chave.
+  verificado: sim
+  escopo: um_trecho
+  trivial_lexical: sim
+- id: A05
+  grupo: A
+  pergunta_pt: Que informação a view sys.dm_db_index_usage_stats fornece?
+  pergunta_en: What information does the sys.dm_db_index_usage_stats view provide?
+  tipo: um_salto
+  categoria: fato
+  saltos_esperados: 1
+  justificativa_multihop: null
+  docs_candidatos:
+  - relational-databases/system-dynamic-management-views/sys-dm-db-index-usage-stats-transact-sql.md
+  componentes:
+  - nome: 'o que a DMV conta: seeks, scans, lookups e updates por índice'
+    essencial: true
+    trechos:
+    - relational-databases/system-dynamic-management-views/sys-dm-db-index-usage-stats-transact-sql.md#chunk0
+  chunks_ouro:
+  - relational-databases/system-dynamic-management-views/sys-dm-db-index-usage-stats-transact-sql.md#chunk0
+  chunks_apoio:
+  - relational-databases/system-dynamic-management-views/sys-dm-db-index-usage-stats-transact-sql.md#chunk1
+  resposta_resumo: >
+    Contagens dos tipos de operação feitos sobre cada índice — seeks, scans, lookups e updates
+    —, separadas entre consultas de usuário e de sistema, com o horário da última ocorrência
+    de cada tipo. Não cobre índices memory-optimized nem espaciais.
+  verificado: sim
+  escopo: um_trecho
+  trivial_lexical: sim
+- id: A06
+  grupo: A
+  pergunta_pt: O que a cláusula DROP_EXISTING faz em uma operação de índice?
+  pergunta_en: What does the DROP_EXISTING clause do in an index operation?
+  tipo: um_salto
+  categoria: fato
+  saltos_esperados: 1
+  justificativa_multihop: null
+  docs_candidatos:
+  - t-sql/statements/create-index-transact-sql.md
+  componentes:
+  - nome: remove e recria o índice existente, de mesmo nome, com a definição nova
+    essencial: true
+    trechos:
+    - t-sql/statements/create-index-transact-sql.md#chunk2p1
+    - t-sql/statements/create-index-transact-sql.md#chunk15
+    - t-sql/statements/create-columnstore-index-transact-sql.md#chunk3p0
+    - t-sql/statements/create-columnstore-index-transact-sql.md#chunk3p1
+    - t-sql/statements/create-json-index-transact-sql.md#chunk2
+    - t-sql/statements/create-spatial-index-transact-sql.md#chunk2
+    - t-sql/statements/create-xml-index-transact-sql.md#chunk2
+  chunks_ouro:
+  - t-sql/statements/create-columnstore-index-transact-sql.md#chunk3p0
+  - t-sql/statements/create-columnstore-index-transact-sql.md#chunk3p1
+  - t-sql/statements/create-index-transact-sql.md#chunk15
+  - t-sql/statements/create-index-transact-sql.md#chunk2p1
+  - t-sql/statements/create-json-index-transact-sql.md#chunk2
+  - t-sql/statements/create-spatial-index-transact-sql.md#chunk2
+  - t-sql/statements/create-xml-index-transact-sql.md#chunk2
+  chunks_apoio:
+  - relational-databases/system-dynamic-management-views/sys-dm-db-index-physical-stats-transact-sql.md#chunk9
+  - relational-databases/partitions/partitioned-tables-and-indexes.md#chunk2
+  resposta_resumo: >
+    Faz o CREATE INDEX remover e recriar, numa operação só, o índice existente de mesmo nome,
+    com a definição nova: outras colunas, outra ordem, outras opções, outro filegroup ou esquema
+    de partição. Substitui um DROP INDEX seguido de CREATE INDEX. No clustered, isso faz os
+    nonclustered serem reconstruídos uma vez só, e só se a definição mudar, em vez de duas.
+    Há mudanças não permitidas, como transformar um clustered rowstore em nonclustered.
+  verificado: sim
+  escopo: um_trecho
+  trivial_lexical: sim
+- id: A07
+  grupo: A
+  pergunta_pt: Que permissão é necessária para executar TRUNCATE TABLE?
+  pergunta_en: What permission is required to run TRUNCATE TABLE?
+  tipo: um_salto
+  categoria: fato
+  saltos_esperados: 1
+  justificativa_multihop: null
+  docs_candidatos:
+  - t-sql/statements/truncate-table-transact-sql.md
+  componentes:
+  - nome: ALTER na tabela
+    essencial: true
+    trechos:
+    - t-sql/statements/truncate-table-transact-sql.md#chunk5
+    - relational-databases/stored-procedures/stored-procedures-database-engine.md#chunk1
+  chunks_ouro:
+  - relational-databases/stored-procedures/stored-procedures-database-engine.md#chunk1
+  - t-sql/statements/truncate-table-transact-sql.md#chunk5
+  chunks_apoio:
+  - t-sql/statements/create-procedure-transact-sql.md#chunk11
+  - t-sql/statements/execute-as-clause-transact-sql.md#chunk8
+  resposta_resumo: >
+    A permissão mínima é ALTER na tabela. Por padrão, têm a permissão o dono da tabela, sysadmin,
+    db_owner e db_ddladmin, e ela não é transferível; para delegar, coloca-se o TRUNCATE TABLE
+    num procedimento com EXECUTE AS e concede-se EXECUTE nele.
+  verificado: sim
+  escopo: um_trecho
+  trivial_lexical: sim
+- id: A08
+  grupo: A
+  pergunta_pt: Que tipos de dados não podem ser usados como coluna-chave de um índice?
+  pergunta_en: Which data types cannot be used as an index key column?
+  tipo: um_salto
+  categoria: fato
+  saltos_esperados: 1
+  justificativa_multihop: null
+  docs_candidatos:
+  - t-sql/statements/create-index-transact-sql.md
+  componentes:
+  - nome: os tipos LOB não podem ser chave
+    essencial: true
+    trechos:
+    - t-sql/statements/create-index-transact-sql.md#chunk2p0
+    - relational-databases/sql-server-index-design-guide.md#chunk2
+  - nome: outros tipos fora dos LOB (CLR sem ordenação binária; tipos novos)
+    essencial: true
+    trechos:
+    - t-sql/statements/create-index-transact-sql.md#chunk2p0
+    - relational-databases/sql-server-index-design-guide.md#chunk2
+    - t-sql/data-types/json-data-type.md#chunk6
+  chunks_ouro:
+  - relational-databases/sql-server-index-design-guide.md#chunk2
+  - t-sql/data-types/json-data-type.md#chunk6
+  - t-sql/statements/create-index-transact-sql.md#chunk2p0
+  chunks_apoio:
+  - relational-databases/xml/create-xml-indexes.md#chunk1
+  - relational-databases/indexes/create-indexes-with-included-columns.md#chunk2
+  resposta_resumo: >
+    Não podem ser chave de índice os tipos de objeto grande: ntext, text, image, varchar(max),
+    nvarchar(max), varbinary(max) e xml. Também não podem os tipos json e vector, mais recentes,
+    nem tipos CLR definidos pelo usuário que não tenham ordenação binária. Esses tipos, exceto
+    text, ntext e image, podem entrar como colunas incluídas.
+  verificado: sim
+  escopo: um_trecho
+  trivial_lexical: nao
+- id: A09
+  grupo: A
+  pergunta_pt: O que a opção PAD_INDEX faz?
+  pergunta_en: What does the PAD_INDEX option do?
+  tipo: um_salto
+  categoria: fato
+  saltos_esperados: 1
+  justificativa_multihop: null
+  docs_candidatos:
+  - t-sql/statements/create-index-transact-sql.md
+  componentes:
+  - nome: aplica o espaço livre do fill factor às páginas intermediárias
+    essencial: true
+    trechos:
+    - t-sql/statements/alter-index-transact-sql.md#chunk2p1
+    - t-sql/statements/create-index-transact-sql.md#chunk2p1
+    - t-sql/statements/alter-table-index-option-transact-sql.md#chunk2
+    - t-sql/statements/create-spatial-index-transact-sql.md#chunk2
+    - t-sql/statements/create-table-transact-sql.md#chunk2p4
+    - t-sql/statements/create-xml-index-transact-sql.md#chunk2
+    - relational-databases/indexes/index-properties-f1-help.md#chunk3
+  chunks_ouro:
+  - relational-databases/indexes/index-properties-f1-help.md#chunk3
+  - t-sql/statements/alter-index-transact-sql.md#chunk2p1
+  - t-sql/statements/alter-table-index-option-transact-sql.md#chunk2
+  - t-sql/statements/create-index-transact-sql.md#chunk2p1
+  - t-sql/statements/create-spatial-index-transact-sql.md#chunk2
+  - t-sql/statements/create-table-transact-sql.md#chunk2p4
+  - t-sql/statements/create-xml-index-transact-sql.md#chunk2
+  chunks_apoio: []
+  resposta_resumo: >
+    Liga o preenchimento das páginas de nível intermediário do índice: com PAD_INDEX = ON,
+    o percentual de espaço livre definido pelo fill factor também é aplicado às páginas intermediárias,
+    e não só às de nível folha. Com OFF (o padrão), as páginas intermediárias ficam quase
+    cheias, com espaço para pelo menos uma linha do tamanho máximo. Só faz diferença junto
+    com FILLFACTOR.
+  verificado: sim
+  escopo: um_trecho
+  trivial_lexical: sim
+- id: A10
+  grupo: A
+  pergunta_pt: Qual é o valor de retorno de @@ROWCOUNT depois de um comando SELECT?
+  pergunta_en: What value does @@ROWCOUNT return after a SELECT statement?
+  tipo: um_salto
+  categoria: fato
+  saltos_esperados: 1
+  justificativa_multihop: null
+  docs_candidatos:
+  - t-sql/functions/rowcount-transact-sql.md
+  componentes:
+  - nome: o número de linhas lidas ou devolvidas pelo SELECT
+    essencial: true
+    trechos:
+    - t-sql/functions/rowcount-transact-sql.md#chunk3
+  chunks_ouro:
+  - t-sql/functions/rowcount-transact-sql.md#chunk3
+  chunks_apoio:
+  - t-sql/functions/rowcount-transact-sql.md#chunk0
+  resposta_resumo: >
+    O número de linhas que o SELECT leu ou devolveu, sejam ou não enviadas ao cliente. Um
+    SELECT sem consulta, como SELECT GETDATE(), é uma atribuição simples e põe o valor em
+    1. Acima de 2 bilhões de linhas, deve-se usar ROWCOUNT_BIG.
+  verificado: sim
+  escopo: um_trecho
+  trivial_lexical: sim
+- id: B01
+  grupo: B
+  pergunta_pt: Se eu remover o índice clustered de uma tabela, o que acontece com a estrutura
+    de armazenamento dela?
+  pergunta_en: If I remove the clustered index from a table, what happens to its storage structure?
+  tipo: multi_salto
+  categoria: impacto
+  saltos_esperados: 2
+  justificativa_multihop: >
+    O documento do DROP INDEX descreve o comando; a consequência de a tabela passar a ser
+    um heap está documentada em outro lugar, junto com as características de um heap.
+  docs_candidatos:
+  - t-sql/statements/drop-index-transact-sql.md
+  - relational-databases/indexes/heaps-tables-without-clustered-indexes.md
+  componentes:
+  - nome: removido o clustered, a tabela vira heap
+    essencial: true
+    trechos:
+    - t-sql/statements/drop-index-transact-sql.md#chunk3
+  chunks_ouro:
+  - t-sql/statements/drop-index-transact-sql.md#chunk3
+  chunks_apoio:
+  - t-sql/statements/drop-index-transact-sql.md#chunk4
+  resposta_resumo: >
+    A tabela passa a ser um heap: a definição do índice sai dos metadados e as linhas que
+    ficavam no nível folha do índice clustered passam a formar uma tabela sem ordem. O espaço
+    que o índice ocupava é liberado; em índices com 128 extents ou mais, a desalocação física
+    é adiada para depois do commit.
+  verificado: sim
+  escopo: um_trecho
+  trivial_lexical: nao
+- id: B02
+  grupo: B
+  pergunta_pt: Remover o índice clustered de uma tabela afeta os índices nonclustered que
+    já existem nela?
+  pergunta_en: Does removing a table's clustered index affect the existing nonclustered indexes?
+  tipo: multi_salto
+  categoria: impacto
+  saltos_esperados: 2
+  justificativa_multihop: >
+    Exige combinar o comportamento de remoção do índice clustered com a documentação sobre
+    como índices nonclustered referenciam as linhas — chave clustered contra identificador
+    de linha.
+  docs_candidatos:
+  - t-sql/statements/drop-index-transact-sql.md
+  - relational-databases/indexes/clustered-and-nonclustered-indexes-described.md
+  componentes:
+  - nome: remover o clustered reconstrói os nonclustered
+    essencial: true
+    trechos:
+    - relational-databases/indexes/create-clustered-indexes.md#chunk2
+    - relational-databases/indexes/reorganize-and-rebuild-indexes.md#chunk2
+    - relational-databases/indexes/heaps-tables-without-clustered-indexes.md#chunk3
+  chunks_ouro:
+  - relational-databases/indexes/create-clustered-indexes.md#chunk2
+  - relational-databases/indexes/heaps-tables-without-clustered-indexes.md#chunk3
+  - relational-databases/indexes/reorganize-and-rebuild-indexes.md#chunk2
+  chunks_apoio:
+  - t-sql/statements/drop-index-transact-sql.md#chunk3
+  - relational-databases/indexes/clustered-and-nonclustered-indexes-described.md#chunk0
+  - relational-databases/sql-server-index-design-guide.md#chunk4
+  resposta_resumo: >
+    Sim. Remover o índice clustered transforma a tabela em heap, e todos os índices nonclustered
+    existentes são reconstruídos como parte da operação de DROP, porque o localizador de linha
+    deixa de ser a chave do clustered e passa a ser o RID. Os nonclustered não são removidos;
+    isso só acontece com view indexada.
+  verificado: sim
+  escopo: um_trecho
+  trivial_lexical: nao
+- id: B03
+  grupo: B
+  pergunta_pt: Por que o comando DROP INDEX falha em um índice que foi criado automaticamente
+    por uma constraint?
+  pergunta_en: Why does DROP INDEX fail on an index that was created automatically by a constraint?
+  tipo: multi_salto
+  categoria: impacto
+  saltos_esperados: 2
+  justificativa_multihop: >
+    A restrição está documentada no DROP INDEX, mas a solução — remover a constraint via ALTER
+    TABLE — está em outro documento, assim como a explicação de que PRIMARY KEY e UNIQUE criam
+    índices implicitamente.
+  docs_candidatos:
+  - t-sql/statements/drop-index-transact-sql.md
+  - t-sql/statements/alter-table-transact-sql.md
+  componentes:
+  - nome: DROP INDEX não remove índice de constraint; usa-se ALTER TABLE ... DROP CONSTRAINT
+    essencial: true
+    trechos:
+    - t-sql/statements/drop-index-transact-sql.md#chunk0
+  chunks_ouro:
+  - t-sql/statements/drop-index-transact-sql.md#chunk0
+  chunks_apoio: []
+  resposta_resumo: >
+    DROP INDEX não se aplica a índices criados ao definir constraints PRIMARY KEY ou UNIQUE.
+    Para remover a constraint e o índice correspondente, usa-se ALTER TABLE com a cláusula
+    DROP CONSTRAINT.
+  verificado: sim
+  escopo: um_trecho
+  trivial_lexical: sim
+- id: B04
+  grupo: B
+  pergunta_pt: O que acontece com as estatísticas de uma tabela quando eu faço rebuild de
+    um índice?
+  pergunta_en: What happens to a table's statistics when an index is rebuilt?
+  tipo: multi_salto
+  categoria: impacto
+  saltos_esperados: 2
+  justificativa_multihop: >
+    A operação de rebuild está documentada no ALTER INDEX; o efeito sobre estatísticas e a
+    diferença em relação ao reorganize estão na documentação de estatísticas.
+  docs_candidatos:
+  - t-sql/statements/alter-index-transact-sql.md
+  - relational-databases/statistics/statistics.md
+  componentes:
+  - nome: o rebuild atualiza as estatísticas do índice
+    essencial: true
+    trechos:
+    - t-sql/statements/alter-index-transact-sql.md#chunk11
+    - relational-databases/indexes/reorganize-and-rebuild-indexes.md#chunk2
+    - relational-databases/indexes/reorganize-and-rebuild-indexes.md#chunk3
+    - relational-databases/partitions/partitioned-tables-and-indexes.md#chunk5
+    - relational-databases/statistics/statistics.md#chunk4
+    - t-sql/statements/create-index-transact-sql.md#chunk7
+  - nome: nenhuma outra estatística da tabela é atualizada
+    essencial: true
+    trechos:
+    - t-sql/statements/alter-index-transact-sql.md#chunk11
+  chunks_ouro:
+  - relational-databases/indexes/reorganize-and-rebuild-indexes.md#chunk2
+  - relational-databases/indexes/reorganize-and-rebuild-indexes.md#chunk3
+  - relational-databases/partitions/partitioned-tables-and-indexes.md#chunk5
+  - relational-databases/statistics/statistics.md#chunk4
+  - t-sql/statements/alter-index-transact-sql.md#chunk11
+  - t-sql/statements/create-index-transact-sql.md#chunk7
+  chunks_apoio:
+  - t-sql/statements/alter-index-transact-sql.md#chunk2p1
+  resposta_resumo: >
+    O rebuild atualiza as estatísticas do próprio índice, com varredura completa se o índice
+    não for particionado e com a amostragem padrão se for. As demais estatísticas da tabela,
+    como as de colunas fora do índice, não são atualizadas pelo rebuild.
+  verificado: sim
+  escopo: um_trecho
+  trivial_lexical: nao
+- id: B05
+  grupo: B
+  pergunta_pt: O que acontece se eu tentar remover uma coluna que faz parte de um índice?
+  pergunta_en: What happens if I try to drop a column that is part of an index?
+  tipo: multi_salto
+  categoria: impacto
+  saltos_esperados: 2
+  justificativa_multihop: >
+    A restrição está no ALTER TABLE DROP COLUMN, e o procedimento correto exige saber como
+    identificar e remover o índice dependente primeiro.
+  docs_candidatos:
+  - t-sql/statements/alter-table-transact-sql.md
+  - t-sql/statements/drop-index-transact-sql.md
+  componentes:
+  - nome: a remoção da coluna falha enquanto ela estiver num índice
+    essencial: true
+    trechos:
+    - t-sql/statements/alter-table-transact-sql.md#chunk5p2
+    - t-sql/statements/alter-table-transact-sql.md#chunk12
+  chunks_ouro:
+  - t-sql/statements/alter-table-transact-sql.md#chunk12
+  - t-sql/statements/alter-table-transact-sql.md#chunk5p2
+  chunks_apoio:
+  - relational-databases/indexes/create-indexes-with-included-columns.md#chunk2
+  - relational-databases/replication/publish/make-schema-changes-on-publication-databases.md#chunk1
+  resposta_resumo: >
+    O ALTER TABLE ... DROP COLUMN falha: uma coluna não pode ser removida enquanto for usada
+    num índice, como chave ou como coluna incluída. É preciso remover antes os índices (e
+    constraints) baseados nela.
+  verificado: sim
+  escopo: um_trecho
+  trivial_lexical: nao
+- id: B06
+  grupo: B
+  pergunta_pt: A escolha da chave do índice clustered influencia o tamanho ocupado pelos índices
+    nonclustered da mesma tabela?
+  pergunta_en: Does the choice of clustered index key affect the size of the nonclustered
+    indexes on the same table?
+  tipo: multi_salto
+  categoria: impacto
+  saltos_esperados: 2
+  justificativa_multihop: >
+    Exige saber que a chave clustered é incluída em cada linha dos índices nonclustered, informação
+    que costuma estar na documentação de arquitetura de índices, e combinar com as recomendações
+    de projeto de chave.
+  docs_candidatos:
+  - relational-databases/sql-server-index-design-guide.md
+  - relational-databases/indexes/clustered-and-nonclustered-indexes-described.md
+  componentes:
+  - nome: a chave do clustered vai em cada nonclustered; chave larga aumenta todos
+    essencial: true
+    trechos:
+    - relational-databases/sql-server-index-design-guide.md#chunk3
+    - relational-databases/databases/estimate-the-size-of-a-nonclustered-index.md#chunk1
+    - relational-databases/databases/estimate-the-size-of-a-nonclustered-index.md#chunk2
+  chunks_ouro:
+  - relational-databases/databases/estimate-the-size-of-a-nonclustered-index.md#chunk1
+  - relational-databases/databases/estimate-the-size-of-a-nonclustered-index.md#chunk2
+  - relational-databases/sql-server-index-design-guide.md#chunk3
+  chunks_apoio:
+  - relational-databases/sql-server-index-design-guide.md#chunk4
+  - relational-databases/indexes/clustered-and-nonclustered-indexes-described.md#chunk0
+  - relational-databases/sql-server-index-design-guide.md#chunk2
+  resposta_resumo: >
+    Sim. A chave do índice clustered faz parte de todo índice nonclustered da mesma tabela,
+    como localizador de linha. Uma chave larga aumenta o espaço, o I/O e a memória de todos
+    os índices; por isso o guia recomenda chave clustered estreita.
+  verificado: sim
+  escopo: um_trecho
+  trivial_lexical: nao
+- id: B07
+  grupo: B
+  pergunta_pt: Posso criar um índice sobre uma coluna computada? Que condições a coluna precisa
+    satisfazer?
+  pergunta_en: Can I create an index on a computed column? What conditions must the column
+    meet?
+  tipo: multi_salto
+  categoria: impacto
+  saltos_esperados: 2
+  justificativa_multihop: >
+    As condições de determinismo e precisão estão na documentação de colunas computadas; as
+    restrições adicionais de indexação estão no CREATE INDEX.
+  docs_candidatos:
+  - relational-databases/tables/specify-computed-columns-in-a-table.md
+  - t-sql/statements/create-index-transact-sql.md
+  componentes:
+  - nome: é possível indexar coluna computada
+    essencial: true
+    trechos:
+    - t-sql/statements/create-index-transact-sql.md#chunk12
+    - relational-databases/indexes/indexes-on-computed-columns.md#chunk0
+    - relational-databases/indexes/indexes-on-computed-columns.md#chunk2
+    - relational-databases/indexes/indexes-on-computed-columns.md#chunk6
+    - t-sql/statements/create-table-transact-sql.md#chunk2p0
+  - nome: determinismo
+    essencial: true
+    trechos:
+    - relational-databases/indexes/indexes-on-computed-columns.md#chunk2
+    - t-sql/statements/create-index-transact-sql.md#chunk12
+  - nome: precisão, salvo coluna PERSISTED
+    essencial: true
+    trechos:
+    - t-sql/statements/create-index-transact-sql.md#chunk12
+    - relational-databases/indexes/indexes-on-computed-columns.md#chunk2
+    - relational-databases/indexes/indexes-on-computed-columns.md#chunk6
+    - t-sql/statements/create-table-transact-sql.md#chunk2p0
+    - t-sql/statements/alter-table-transact-sql.md#chunk5p1
+    - t-sql/statements/alter-table-computed-column-definition-transact-sql.md#chunk2
+  - nome: tipo de dado permitido
+    essencial: true
+    trechos:
+    - relational-databases/indexes/indexes-on-computed-columns.md#chunk4
+    - t-sql/statements/create-index-transact-sql.md#chunk12
+  - nome: opções SET obrigatórias
+    essencial: true
+    trechos:
+    - relational-databases/indexes/indexes-on-computed-columns.md#chunk5
+    - t-sql/statements/set-statements-transact-sql.md#chunk1
+  chunks_ouro:
+  - relational-databases/indexes/indexes-on-computed-columns.md#chunk0
+  - relational-databases/indexes/indexes-on-computed-columns.md#chunk2
+  - relational-databases/indexes/indexes-on-computed-columns.md#chunk4
+  - relational-databases/indexes/indexes-on-computed-columns.md#chunk5
+  - relational-databases/indexes/indexes-on-computed-columns.md#chunk6
+  - t-sql/statements/alter-table-computed-column-definition-transact-sql.md#chunk2
+  - t-sql/statements/alter-table-transact-sql.md#chunk5p1
+  - t-sql/statements/create-index-transact-sql.md#chunk12
+  - t-sql/statements/create-table-transact-sql.md#chunk2p0
+  - t-sql/statements/set-statements-transact-sql.md#chunk1
+  chunks_apoio:
+  - relational-databases/indexes/indexes-on-computed-columns.md#chunk1
+  - relational-databases/indexes/indexes-on-computed-columns.md#chunk3
+  resposta_resumo: >
+    Sim. A coluna computada pode ser indexada se a expressão for determinística e precisa;
+    uma expressão determinística mas imprecisa (por exemplo, com float) só pode ser indexada
+    se a coluna for PERSISTED. O tipo de dado resultante precisa ser aceito como chave de
+    índice, e a sessão precisa das opções SET exigidas (seis em ON, incluindo ANSI_NULLS e
+    QUOTED_IDENTIFIER, e NUMERIC_ROUNDABORT em OFF). Há também o requisito de propriedade
+    das funções referenciadas.
+  verificado: sim
+  escopo: multi_trecho_mesmo_doc
+  trivial_lexical: sim
+- id: B08
+  grupo: B
+  pergunta_pt: Executar TRUNCATE TABLE em uma tabela tem algum efeito sobre os índices dela?
+  pergunta_en: Does running TRUNCATE TABLE on a table have any effect on its indexes?
+  tipo: multi_salto
+  categoria: impacto
+  saltos_esperados: 2
+  justificativa_multihop: >
+    O comportamento do truncate está em um documento, e o efeito sobre estruturas de índice
+    e alocação de páginas exige a documentação de índices ou de alocação.
+  docs_candidatos:
+  - t-sql/statements/truncate-table-transact-sql.md
+  componentes:
+  - nome: os índices continuam existindo
+    essencial: true
+    trechos:
+    - t-sql/statements/truncate-table-transact-sql.md#chunk3
+  - nome: as páginas da tabela e dos índices são desalocadas
+    essencial: true
+    trechos:
+    - t-sql/statements/truncate-table-transact-sql.md#chunk3
+  chunks_ouro:
+  - t-sql/statements/truncate-table-transact-sql.md#chunk3
+  chunks_apoio:
+  - t-sql/statements/truncate-table-transact-sql.md#chunk2
+  - t-sql/functions/vector-search-transact-sql.md#chunk9
+  resposta_resumo: >
+    Os índices continuam existindo, com sua definição intacta, mas ficam vazios: o TRUNCATE
+    TABLE desaloca as páginas de dados da tabela e dos índices, sem deixar nenhuma página.
+    Para truncar partições, tabela e índices precisam estar alinhados. Tabelas com índice
+    vetorial não podem ser truncadas.
+  verificado: sim
+  escopo: um_trecho
+  trivial_lexical: sim
+- id: B09
+  grupo: B
+  pergunta_pt: Particionar uma tabela existente afeta os índices já criados sobre ela?
+  pergunta_en: Does partitioning an existing table affect the indexes already created on it?
+  tipo: multi_salto
+  categoria: impacto
+  saltos_esperados: 3
+  justificativa_multihop: >
+    Exige combinar a documentação de tabelas particionadas, o conceito de índice alinhado,
+    e as restrições de criação de índice sobre esquema de partição.
+  docs_candidatos:
+  - relational-databases/partitions/partitioned-tables-and-indexes.md
+  - t-sql/statements/create-index-transact-sql.md
+  componentes:
+  - nome: particionar a tabela é criar ou reconstruir o clustered no esquema de partição
+    essencial: true
+    trechos:
+    - t-sql/statements/create-index-transact-sql.md#chunk2p0
+    - relational-databases/sql-server-index-design-guide.md#chunk2
+  - nome: os nonclustered existentes não acompanham e podem ficar desalinhados
+    essencial: true
+    trechos:
+    - t-sql/statements/create-index-transact-sql.md#chunk15
+    - t-sql/statements/drop-index-transact-sql.md#chunk2
+  chunks_ouro:
+  - relational-databases/sql-server-index-design-guide.md#chunk2
+  - t-sql/statements/create-index-transact-sql.md#chunk15
+  - t-sql/statements/create-index-transact-sql.md#chunk2p0
+  - t-sql/statements/drop-index-transact-sql.md#chunk2
+  chunks_apoio:
+  - relational-databases/partitions/partitioned-tables-and-indexes.md#chunk2
+  - relational-databases/partitions/create-partitioned-tables-and-indexes.md#chunk4
+  resposta_resumo: >
+    Sim. Particionar uma tabela existente é recriar o índice clustered (que contém os dados)
+    num esquema de partição, por CREATE INDEX com DROP_EXISTING ou ON partition_scheme. Os
+    índices nonclustered existentes não acompanham: ficam nos filegroups ou esquemas originais
+    e podem deixar de estar alinhados com a tabela, até serem reconstruídos no esquema de
+    partição (DROP_EXISTING). Índices desalinhados impedem, por exemplo, a troca rápida de
+    partições.
+  verificado: sim
+  escopo: multi_trecho_mesmo_doc
+  trivial_lexical: nao
+- id: B10
+  grupo: B
+  pergunta_pt: Habilitar FILESTREAM em uma tabela impõe algum requisito sobre os índices dessa
+    tabela?
+  pergunta_en: Does enabling FILESTREAM on a table impose any requirement on that table's
+    indexes?
+  tipo: multi_salto
+  categoria: impacto
+  saltos_esperados: 2
+  justificativa_multihop: >
+    O requisito de coluna ROWGUIDCOL única está na documentação de FILESTREAM; a implicação
+    de que isso força a existência de um índice único exige a documentação de constraints
+    ou de índices.
+  docs_candidatos:
+  - relational-databases/blob/filestream-sql-server.md
+  - t-sql/statements/create-table-transact-sql.md
+  componentes:
+  - nome: coluna uniqueidentifier ROWGUIDCOL com constraint UNIQUE ou PRIMARY KEY
+    essencial: true
+    trechos:
+    - t-sql/statements/create-table-transact-sql.md#chunk2p2
+    - t-sql/statements/alter-table-column-definition-transact-sql.md#chunk2
+  - nome: FILESTREAM_ON ao criar o clustered em tabela particionada
+    essencial: true
+    trechos:
+    - t-sql/statements/create-table-transact-sql.md#chunk2p2
+    - t-sql/statements/create-index-transact-sql.md#chunk2p1
+  chunks_ouro:
+  - t-sql/statements/alter-table-column-definition-transact-sql.md#chunk2
+  - t-sql/statements/create-index-transact-sql.md#chunk2p1
+  - t-sql/statements/create-table-transact-sql.md#chunk2p2
+  chunks_apoio:
+  - t-sql/statements/drop-index-transact-sql.md#chunk2
+  - relational-databases/errors-events/mssqlserver-1793-database-engine-error.md#chunk1
+  resposta_resumo: >
+    Sim. A tabela precisa de uma coluna uniqueidentifier com ROWGUIDCOL, NOT NULL e com constraint
+    UNIQUE ou PRIMARY KEY de coluna única, que é imposta por um índice único. Se a tabela
+    for particionada, criar o índice clustered exige FILESTREAM_ON com um esquema de partição
+    de filegroups FILESTREAM que use a mesma função e as mesmas colunas de partição da tabela.
+  verificado: sim
+  escopo: um_trecho
+  trivial_lexical: nao
+- id: B11
+  grupo: B
+  pergunta_pt: Como identificar índices que não estão sendo usados por nenhuma consulta e
+    avaliar se podem ser removidos?
+  pergunta_en: How can I identify indexes that no query is using, and decide whether they
+    can be removed?
+  tipo: multi_salto
+  categoria: impacto
+  saltos_esperados: 3
+  justificativa_multihop: >
+    Exige a DMV de uso de índices, a ressalva de que os contadores são reiniciados junto com
+    a instância, e a documentação de remoção de índice.
+  docs_candidatos:
+  - relational-databases/system-dynamic-management-views/sys-dm-db-index-usage-stats-transact-sql.md
+  - t-sql/statements/drop-index-transact-sql.md
+  componentes:
+  - nome: usar sys.dm_db_index_usage_stats
+    essencial: true
+    trechos:
+    - relational-databases/system-dynamic-management-views/sys-dm-db-index-usage-stats-transact-sql.md#chunk1
+    - relational-databases/system-dynamic-management-views/sys-dm-db-index-usage-stats-transact-sql.md#chunk0
+    - relational-databases/system-dynamic-management-views/sys-dm-db-index-operational-stats-transact-sql.md#chunk6
+  - nome: os contadores zeram quando a instância reinicia
+    essencial: true
+    trechos:
+    - relational-databases/system-dynamic-management-views/sys-dm-db-index-usage-stats-transact-sql.md#chunk1
+  - nome: índice com custo de manutenção e sem leitura é candidato à remoção
+    essencial: true
+    trechos:
+    - relational-databases/system-dynamic-management-views/sys-dm-db-index-usage-stats-transact-sql.md#chunk1
+    - relational-databases/automatic-tuning/automatic-tuning.md#chunk3
+    - relational-databases/sql-server-index-design-guide.md#chunk2
+  chunks_ouro:
+  - relational-databases/automatic-tuning/automatic-tuning.md#chunk3
+  - relational-databases/sql-server-index-design-guide.md#chunk2
+  - relational-databases/system-dynamic-management-views/sys-dm-db-index-operational-stats-transact-sql.md#chunk6
+  - relational-databases/system-dynamic-management-views/sys-dm-db-index-usage-stats-transact-sql.md#chunk0
+  - relational-databases/system-dynamic-management-views/sys-dm-db-index-usage-stats-transact-sql.md#chunk1
+  chunks_apoio:
+  - t-sql/statements/drop-index-transact-sql.md#chunk0
+  - relational-databases/post-migration-validation-and-optimization-guide.md#chunk4
+  resposta_resumo: >
+    Com a DMV sys.dm_db_index_usage_stats: ela conta seeks, scans, lookups e updates por índice.
+    Índices com custo de manutenção (user_updates) e sem uso, ou com pouco uso, em consultas
+    são candidatos à remoção. Ressalva: os contadores zeram quando o Database Engine reinicia,
+    e as linhas do banco somem quando ele é desanexado ou fechado (AUTO_CLOSE). Por isso é
+    preciso conferir há quanto tempo a instância está no ar (sqlserver_start_time em sys.dm_os_sys_info).
+  verificado: sim
+  escopo: um_trecho
+  trivial_lexical: nao
+- id: B12
+  grupo: B
+  pergunta_pt: Adicionar um índice a uma tabela tem algum custo sobre operações de escrita?
+  pergunta_en: Does adding an index to a table have any cost on write operations?
+  tipo: multi_salto
+  categoria: impacto
+  saltos_esperados: 2
+  justificativa_multihop: >
+    O custo de manutenção em INSERT, UPDATE e DELETE costuma estar no guia de projeto de índices,
+    separado da documentação de criação.
+  docs_candidatos:
+  - relational-databases/sql-server-index-design-guide.md
+  componentes:
+  - nome: INSERT, UPDATE, DELETE e MERGE precisam manter os índices
+    essencial: true
+    trechos:
+    - relational-databases/sql-server-index-design-guide.md#chunk2
+    - relational-databases/indexes/tune-nonclustered-missing-index-suggestions.md#chunk2
+    - relational-databases/automatic-tuning/automatic-tuning.md#chunk3
+  chunks_ouro:
+  - relational-databases/automatic-tuning/automatic-tuning.md#chunk3
+  - relational-databases/indexes/tune-nonclustered-missing-index-suggestions.md#chunk2
+  - relational-databases/sql-server-index-design-guide.md#chunk2
+  chunks_apoio:
+  - relational-databases/indexes/clustered-and-nonclustered-indexes-described.md#chunk0
+  resposta_resumo: >
+    Sim. Cada índice precisa ser mantido a cada INSERT, UPDATE, DELETE e MERGE que altere
+    colunas dele, o que aumenta o custo das escritas, além de ocupar espaço. Por isso a recomendação
+    é evitar excesso de índices em tabelas muito atualizadas.
+  verificado: sim
+  escopo: um_trecho
+  trivial_lexical: nao
+- id: C01
+  grupo: C
+  pergunta_pt: Que condições uma tabela precisa satisfazer para receber um índice columnstore
+    clustered?
+  pergunta_en: What conditions must a table meet before it can have a clustered columnstore
+    index?
+  tipo: multi_salto
+  categoria: prerequisito
+  saltos_esperados: 2
+  justificativa_multihop: >
+    As restrições de tipo de dado e de recursos incompatíveis estão em documento próprio de
+    columnstore, separadas da sintaxe de criação.
+  docs_candidatos:
+  - relational-databases/indexes/columnstore-indexes-overview.md
+  - t-sql/statements/create-columnstore-index-transact-sql.md
+  componentes:
+  - nome: tipos de dado que impedem o columnstore
+    essencial: true
+    trechos:
+    - t-sql/statements/create-columnstore-index-transact-sql.md#chunk7
+  - nome: recursos incompatíveis com o columnstore clustered
+    essencial: true
+    trechos:
+    - t-sql/statements/create-columnstore-index-transact-sql.md#chunk7
+  chunks_ouro:
+  - t-sql/statements/create-columnstore-index-transact-sql.md#chunk7
+  chunks_apoio:
+  - relational-databases/track-changes/change-data-capture-and-other-sql-server-features.md#chunk7
+  - t-sql/language-elements/declare-cursor-transact-sql.md#chunk5
+  - relational-databases/indexes/columnstore-indexes-what-s-new.md#chunk5
+  - t-sql/statements/create-columnstore-index-transact-sql.md#chunk3p1
+  resposta_resumo: >
+    A tabela não pode ter colunas de tipos que o columnstore não aceita: ntext, text e image;
+    rowversion; sql_variant; tipos CLR, como hierarchyid e os espaciais; e xml. Os LOB varchar(max),
+    nvarchar(max) e varbinary(max) só são aceitos a partir do SQL Server 2017, e só no columnstore
+    clustered. Também não pode usar recursos incompatíveis: coluna computada persistida, compressão
+    de página ou de linha, replicação, FILESTREAM, e ainda cursores e triggers na tabela com
+    columnstore clustered. PRIMARY KEY, UNIQUE e FOREIGN KEY são permitidas, impostas por
+    índices rowstore.
+  verificado: sim
+  escopo: um_trecho
+  trivial_lexical: sim
+- id: C02
+  grupo: C
+  pergunta_pt: Que opções de sessão precisam estar configuradas para criar um índice sobre
+    uma view?
+  pergunta_en: Which session options must be set to create an index on a view?
+  tipo: multi_salto
+  categoria: prerequisito
+  saltos_esperados: 2
+  justificativa_multihop: >
+    A lista de opções SET obrigatórias e a exigência de SCHEMABINDING estão distribuídas entre
+    a documentação de views indexadas e a de criação de índice.
+  docs_candidatos:
+  - relational-databases/views/create-indexed-views.md
+  - t-sql/statements/create-index-transact-sql.md
+  componentes:
+  - nome: lista das opções SET exigidas (seis em ON, NUMERIC_ROUNDABORT em OFF)
+    essencial: true
+    trechos:
+    - relational-databases/views/create-indexed-views.md#chunk2
+    - t-sql/statements/set-statements-transact-sql.md#chunk1
+  - nome: as opções também valem na criação da view e das tabelas
+    essencial: true
+    trechos:
+    - relational-databases/views/create-indexed-views.md#chunk2
+    - relational-databases/views/create-indexed-views.md#chunk1
+  chunks_ouro:
+  - relational-databases/views/create-indexed-views.md#chunk1
+  - relational-databases/views/create-indexed-views.md#chunk2
+  - t-sql/statements/set-statements-transact-sql.md#chunk1
+  chunks_apoio:
+  - relational-databases/views/create-indexed-views.md#chunk0
+  - t-sql/statements/create-view-transact-sql.md#chunk3
+  - relational-databases/views/create-indexed-views.md#chunk4
+  resposta_resumo: >
+    Sete opções de sessão com valores fixos: ANSI_NULLS, ANSI_PADDING, ANSI_WARNINGS, ARITHABORT,
+    CONCAT_NULL_YIELDS_NULL e QUOTED_IDENTIFIER em ON, e NUMERIC_ROUNDABORT em OFF. Os valores
+    precisam estar assim quando a view e os índices dela são criados, quando as tabelas referenciadas
+    foram criadas, em toda operação de INSERT, UPDATE e DELETE nas tabelas e quando o otimizador
+    usa a view indexada. ANSI_WARNINGS em ON já liga ARITHABORT. Fora das opções de sessão,
+    a view precisa de SCHEMABINDING e o primeiro índice dela tem de ser clustered único.
+  verificado: sim
+  escopo: um_trecho
+  trivial_lexical: sim
+- id: C03
+  grupo: C
+  pergunta_pt: Que requisitos existem para executar uma operação de índice sem bloquear as
+    consultas em andamento?
+  pergunta_en: What are the requirements for running an index operation without blocking ongoing
+    queries?
+  tipo: multi_salto
+  categoria: prerequisito
+  saltos_esperados: 2
+  justificativa_multihop: >
+    Exige que o sistema associe a descrição do problema à opção ONLINE, e depois combine os
+    requisitos de edição do produto com as restrições de tipo de coluna.
+  docs_candidatos:
+  - relational-databases/indexes/perform-index-operations-online.md
+  - t-sql/statements/create-index-transact-sql.md
+  componentes:
+  - nome: a operação online (ONLINE = ON) mantém a tabela disponível
+    essencial: true
+    trechos:
+    - t-sql/statements/alter-index-transact-sql.md#chunk2p1
+    - t-sql/statements/create-index-transact-sql.md#chunk2p1
+    - t-sql/statements/create-index-transact-sql.md#chunk2p2
+    - relational-databases/indexes/perform-index-operations-online.md#chunk0
+    - t-sql/statements/alter-table-index-option-transact-sql.md#chunk2
+    - t-sql/statements/alter-table-transact-sql.md#chunk5p2
+    - t-sql/statements/drop-index-transact-sql.md#chunk2
+    - relational-databases/indexes/move-an-existing-index-to-a-different-filegroup.md#chunk2
+    - relational-databases/maintenance-plans/rebuild-index-task-maintenance-plan.md#chunk1
+    - relational-databases/maintenance-plans/use-the-maintenance-plan-wizard.md#chunk7p0
+  - nome: requisito de edição
+    essencial: true
+    trechos:
+    - t-sql/statements/alter-index-transact-sql.md#chunk2p1
+    - t-sql/statements/create-index-transact-sql.md#chunk2p1
+    - relational-databases/indexes/guidelines-for-online-index-operations.md#chunk0
+    - relational-databases/indexes/perform-index-operations-online.md#chunk1
+    - t-sql/statements/alter-table-index-option-transact-sql.md#chunk2
+    - t-sql/statements/alter-table-transact-sql.md#chunk5p2
+    - t-sql/statements/drop-index-transact-sql.md#chunk2
+    - t-sql/statements/create-json-index-transact-sql.md#chunk2
+    - t-sql/statements/create-spatial-index-transact-sql.md#chunk2
+    - t-sql/statements/create-xml-index-transact-sql.md#chunk2
+    - relational-databases/maintenance-plans/rebuild-index-task-maintenance-plan.md#chunk1
+    - relational-databases/maintenance-plans/use-the-maintenance-plan-wizard.md#chunk7p0
+    - relational-databases/indexes/ordered-columnstore-indexes.md#chunk2
+  - nome: restrições de tipo de coluna (LOB) para operação online
+    essencial: true
+    trechos:
+    - t-sql/statements/alter-index-transact-sql.md#chunk2p1
+    - t-sql/statements/create-index-transact-sql.md#chunk2p2
+    - relational-databases/indexes/guidelines-for-online-index-operations.md#chunk0
+  chunks_ouro:
+  - relational-databases/indexes/guidelines-for-online-index-operations.md#chunk0
+  - relational-databases/indexes/move-an-existing-index-to-a-different-filegroup.md#chunk2
+  - relational-databases/indexes/ordered-columnstore-indexes.md#chunk2
+  - relational-databases/indexes/perform-index-operations-online.md#chunk0
+  - relational-databases/indexes/perform-index-operations-online.md#chunk1
+  - relational-databases/maintenance-plans/rebuild-index-task-maintenance-plan.md#chunk1
+  - relational-databases/maintenance-plans/use-the-maintenance-plan-wizard.md#chunk7p0
+  - t-sql/statements/alter-index-transact-sql.md#chunk2p1
+  - t-sql/statements/alter-table-index-option-transact-sql.md#chunk2
+  - t-sql/statements/alter-table-transact-sql.md#chunk5p2
+  - t-sql/statements/create-index-transact-sql.md#chunk2p1
+  - t-sql/statements/create-index-transact-sql.md#chunk2p2
+  - t-sql/statements/create-json-index-transact-sql.md#chunk2
+  - t-sql/statements/create-spatial-index-transact-sql.md#chunk2
+  - t-sql/statements/create-xml-index-transact-sql.md#chunk2
+  - t-sql/statements/drop-index-transact-sql.md#chunk2
+  chunks_apoio:
+  - relational-databases/indexes/guidelines-for-online-index-operations.md#chunk0
+  resposta_resumo: >
+    Usar a operação de índice online (ONLINE = ON): durante a fase principal só um bloqueio
+    IS é mantido, e consultas e alterações continuam. Os requisitos são três. A edição do
+    SQL Server precisa oferecer operações online, que não existem em todas. O índice clustered
+    não pode ser criado, reconstruído ou removido online se a tabela tiver colunas LOB antigas
+    (image, ntext, text) ou espaciais. E há exclusões, como índice XML, índice em tabela temporária
+    local e o primeiro índice clustered único de uma view. Mesmo online, há bloqueios curtos
+    no início e no fim (S e Sch-M); WAIT_AT_LOW_PRIORITY reduz a espera.
+  verificado: sim
+  escopo: um_trecho
+  trivial_lexical: nao
+- id: C04
+  grupo: C
+  pergunta_pt: Que pré-requisitos e permissões são necessários para habilitar Change Data
+    Capture em uma tabela?
+  pergunta_en: What prerequisites and permissions are needed to enable Change Data Capture
+    on a table?
+  tipo: multi_salto
+  categoria: prerequisito
+  saltos_esperados: 2
+  justificativa_multihop: >
+    Exige habilitar CDC no banco antes da tabela, e a permissão necessária está no procedimento
+    armazenado, separada da documentação conceitual.
+  docs_candidatos:
+  - relational-databases/track-changes/enable-and-disable-change-data-capture-sql-server.md
+  - relational-databases/system-stored-procedures/sys-sp-cdc-enable-table-transact-sql.md
+  componentes:
+  - nome: o CDC precisa estar habilitado no banco antes
+    essencial: true
+    trechos:
+    - relational-databases/system-stored-procedures/sys-sp-cdc-enable-table-transact-sql.md#chunk5
+    - relational-databases/track-changes/enable-and-disable-change-data-capture-sql-server.md#chunk2
+    - relational-databases/system-stored-procedures/sys-sp-cdc-enable-db-transact-sql.md#chunk0
+    - relational-databases/track-changes/about-change-data-capture-sql-server.md#chunk3
+  - nome: 'permissão para habilitar na tabela: db_owner'
+    essencial: true
+    trechos:
+    - relational-databases/system-stored-procedures/sys-sp-cdc-enable-table-transact-sql.md#chunk6
+    - relational-databases/track-changes/enable-and-disable-change-data-capture-sql-server.md#chunk4
+    - relational-databases/track-changes/track-data-changes-sql-server.md#chunk3
+  chunks_ouro:
+  - relational-databases/system-stored-procedures/sys-sp-cdc-enable-db-transact-sql.md#chunk0
+  - relational-databases/system-stored-procedures/sys-sp-cdc-enable-table-transact-sql.md#chunk5
+  - relational-databases/system-stored-procedures/sys-sp-cdc-enable-table-transact-sql.md#chunk6
+  - relational-databases/track-changes/about-change-data-capture-sql-server.md#chunk3
+  - relational-databases/track-changes/enable-and-disable-change-data-capture-sql-server.md#chunk2
+  - relational-databases/track-changes/enable-and-disable-change-data-capture-sql-server.md#chunk4
+  - relational-databases/track-changes/track-data-changes-sql-server.md#chunk3
+  chunks_apoio:
+  - relational-databases/system-stored-procedures/sys-sp-cdc-enable-db-transact-sql.md#chunk5
+  - relational-databases/track-changes/enable-and-disable-change-data-capture-sql-server.md#chunk1
+  - relational-databases/system-stored-procedures/sys-sp-cdc-enable-table-transact-sql.md#chunk0
+  resposta_resumo: >
+    Primeiro, o CDC precisa estar habilitado no banco, com sys.sp_cdc_enable_db, o que exige
+    sysadmin no SQL Server e na Managed Instance. Depois, habilitar a tabela com sys.sp_cdc_enable_table
+    exige ser membro de db_owner. O SQL Server Agent não precisa estar rodando para habilitar,
+    mas a captura só processa o log com ele em execução. O recurso não existe em todas as
+    edições.
+  verificado: sim
+  escopo: multi_trecho_mesmo_doc
+  trivial_lexical: sim
+- id: C05
+  grupo: C
+  pergunta_pt: Uma tabela memory-optimized pode ter os mesmos tipos de índice de uma tabela
+    comum?
+  pergunta_en: Can a memory-optimized table have the same index types as a regular table?
+  tipo: multi_salto
+  categoria: prerequisito
+  saltos_esperados: 2
+  justificativa_multihop: >
+    Exige combinar a documentação de índices em tabelas memory-optimized com a de índices
+    tradicionais para estabelecer a diferença.
+  docs_candidatos:
+  - relational-databases/in-memory-oltp/memory-optimized-tables.md
+  - relational-databases/in-memory-oltp/indexes-on-memory-optimized-tables.md
+  componentes:
+  - nome: os índices de tabela memory-optimized são próprios (hash e nonclustered de memória)
+    essencial: true
+    trechos:
+    - relational-databases/in-memory-oltp/indexes-for-memory-optimized-tables.md#chunk0
+    - relational-databases/sql-server-index-design-guide.md#chunk9
+    - relational-databases/in-memory-oltp/survey-of-initial-areas-in-in-memory-oltp.md#chunk11
+  - nome: o columnstore clustered também é aceito (o tipo em comum)
+    essencial: true
+    trechos:
+    - relational-databases/indexes/get-started-with-columnstore-for-real-time-operational-analytics.md#chunk2
+  chunks_ouro:
+  - relational-databases/in-memory-oltp/indexes-for-memory-optimized-tables.md#chunk0
+  - relational-databases/in-memory-oltp/survey-of-initial-areas-in-in-memory-oltp.md#chunk11
+  - relational-databases/indexes/get-started-with-columnstore-for-real-time-operational-analytics.md#chunk2
+  - relational-databases/sql-server-index-design-guide.md#chunk9
+  chunks_apoio:
+  - t-sql/statements/create-table-transact-sql.md#chunk1
+  - relational-databases/sql-server-index-design-guide.md#chunk7
+  - relational-databases/indexes/columnstore-indexes-overview.md#chunk6
+  - relational-databases/in-memory-oltp/plan-your-adoption-of-in-memory-oltp-features-in-sql-server.md#chunk4
+  - relational-databases/in-memory-oltp/a-guide-to-query-processing-for-memory-optimized-tables.md#chunk3
+  resposta_resumo: >
+    Não. Tabela memory-optimized tem índices próprios: hash e nonclustered de memória (Bw-tree),
+    que não ficam em páginas de disco, não têm fill factor e são reconstruídos quando o banco
+    volta. Não aceita índice clustered rowstore. O tipo em comum com a tabela comum é o columnstore,
+    que na tabela memory-optimized precisa ser o clustered (inclui todas as colunas).
+  verificado: sim
+  escopo: multi_documento
+  trivial_lexical: sim
+- id: D01
+  grupo: D
+  pergunta_pt: Qual a diferença entre reconstruir e reorganizar um índice, em termos de bloqueio
+    e de atualização de estatísticas?
+  pergunta_en: What is the difference between rebuilding and reorganizing an index, in terms
+    of locking and statistics updates?
+  tipo: multi_salto
+  categoria: comparacao
+  saltos_esperados: 2
+  justificativa_multihop: >
+    As duas operações estão no ALTER INDEX, mas o efeito sobre estatísticas exige a documentação
+    de estatísticas, e o comportamento de bloqueio pode estar no guia de manutenção.
+  docs_candidatos:
+  - t-sql/statements/alter-index-transact-sql.md
+  - relational-databases/statistics/statistics.md
+  componentes:
+  - nome: 'bloqueio: reorganize sempre online; rebuild offline bloqueia, salvo ONLINE = ON'
+    essencial: true
+    trechos:
+    - relational-databases/indexes/reorganize-and-rebuild-indexes.md#chunk2
+  - nome: 'estatísticas: o rebuild atualiza; o reorganize não'
+    essencial: true
+    trechos:
+    - relational-databases/indexes/reorganize-and-rebuild-indexes.md#chunk2
+    - relational-databases/statistics/statistics.md#chunk4
+    - relational-databases/system-dynamic-management-views/sys-dm-db-index-physical-stats-transact-sql.md#chunk8
+  chunks_ouro:
+  - relational-databases/indexes/reorganize-and-rebuild-indexes.md#chunk2
+  - relational-databases/statistics/statistics.md#chunk4
+  - relational-databases/system-dynamic-management-views/sys-dm-db-index-physical-stats-transact-sql.md#chunk8
+  chunks_apoio:
+  - t-sql/statements/alter-index-transact-sql.md#chunk8
+  - t-sql/statements/alter-index-transact-sql.md#chunk2p0
+  - t-sql/statements/alter-index-transact-sql.md#chunk11
+  resposta_resumo: >
+    Bloqueio: o reorganize é sempre online, sem bloqueios longos, e consultas e alterações
+    continuam. O rebuild offline mantém bloqueios no objeto durante toda a operação e impede
+    o acesso; o rebuild online só precisa de um bloqueio curto no fim, mas não está em todas
+    as edições. Estatísticas: o rebuild atualiza as estatísticas do índice, com varredura
+    completa no índice não particionado; o reorganize não atualiza estatísticas.
+  verificado: sim
+  escopo: um_trecho
+  trivial_lexical: sim
+- id: D02
+  grupo: D
+  pergunta_pt: Qual a diferença entre criar um índice único e criar uma constraint UNIQUE
+    sobre a mesma coluna?
+  pergunta_en: What is the difference between creating a unique index and creating a UNIQUE
+    constraint on the same column?
+  tipo: multi_salto
+  categoria: comparacao
+  saltos_esperados: 2
+  justificativa_multihop: >
+    Exige combinar a documentação de índice único com a de constraints, já que a diferença
+    é de metadados e de forma de remoção, não de estrutura.
+  docs_candidatos:
+  - relational-databases/indexes/create-unique-indexes.md
+  - t-sql/statements/alter-table-transact-sql.md
+  componentes:
+  - nome: mesma estrutura e validação; o otimizador não distingue
+    essencial: true
+    trechos:
+    - relational-databases/indexes/create-unique-indexes.md#chunk0
+    - relational-databases/sql-server-index-design-guide.md#chunk5
+  - nome: 'metadado: a constraint deixa explícito o objetivo'
+    essencial: true
+    trechos:
+    - relational-databases/indexes/create-unique-indexes.md#chunk0
+    - relational-databases/sql-server-index-design-guide.md#chunk5
+  - nome: 'remoção: índice de constraint não sai com DROP INDEX, só com ALTER TABLE'
+    essencial: true
+    trechos:
+    - t-sql/statements/drop-index-transact-sql.md#chunk0
+    - t-sql/statements/drop-index-transact-sql.md#chunk8
+    - t-sql/statements/create-table-transact-sql.md#chunk11
+  chunks_ouro:
+  - relational-databases/indexes/create-unique-indexes.md#chunk0
+  - relational-databases/sql-server-index-design-guide.md#chunk5
+  - t-sql/statements/create-table-transact-sql.md#chunk11
+  - t-sql/statements/drop-index-transact-sql.md#chunk0
+  - t-sql/statements/drop-index-transact-sql.md#chunk8
+  chunks_apoio:
+  - relational-databases/tables/unique-constraints-and-check-constraints.md#chunk1
+  - t-sql/statements/alter-table-transact-sql.md#chunk12
+  - relational-databases/indexes/create-filtered-indexes.md#chunk2
+  - relational-databases/indexes/create-unique-indexes.md#chunk1
+  resposta_resumo: >
+    Não há diferença significativa de estrutura nem de validação: a constraint UNIQUE é imposta
+    por um índice único, e o otimizador não distingue um do outro. As diferenças são de metadado
+    e de gestão. A constraint deixa explícito o objetivo, a regra de negócio. O índice criado
+    por uma constraint não pode ser removido com DROP INDEX; é preciso remover a constraint
+    com ALTER TABLE ... DROP CONSTRAINT. Algumas opções só existem no índice avulso, como
+    o filtro.
+  verificado: sim
+  escopo: multi_documento
+  trivial_lexical: nao
+- id: D03
+  grupo: D
+  pergunta_pt: Em que situações um índice filtrado é preferível a uma view indexada?
+  pergunta_en: In what situations is a filtered index preferable to an indexed view?
+  tipo: multi_salto
+  categoria: comparacao
+  saltos_esperados: 2
+  justificativa_multihop: >
+    Exige a documentação das duas estruturas, que estão em documentos separados e não se referenciam
+    necessariamente.
+  docs_candidatos:
+  - relational-databases/indexes/create-filtered-indexes.md
+  - relational-databases/views/create-indexed-views.md
+  componentes:
+  - nome: quando a condição é simples e numa tabela só
+    essencial: true
+    trechos:
+    - relational-databases/indexes/create-filtered-indexes.md#chunk2
+    - relational-databases/sql-server-index-design-guide.md#chunk6
+  - nome: vantagens do índice filtrado sobre a view indexada
+    essencial: true
+    trechos:
+    - relational-databases/indexes/create-filtered-indexes.md#chunk2
+  chunks_ouro:
+  - relational-databases/indexes/create-filtered-indexes.md#chunk2
+  - relational-databases/sql-server-index-design-guide.md#chunk6
+  chunks_apoio: []
+  resposta_resumo: >
+    Quando o filtro é uma comparação simples sobre uma única tabela; filtro com lógica complexa
+    ou com várias tabelas exige view indexada. Nesses casos o índice filtrado tem quatro vantagens:
+    manutenção mais barata (o processador de consultas usa menos CPU para atualizá-lo), melhor
+    qualidade de plano (o otimizador o considera em mais situações), rebuild online (a view
+    indexada não aceita) e a possibilidade de ser não único (a view indexada precisa ser única).
+  verificado: sim
+  escopo: um_trecho
+  trivial_lexical: sim
+- id: D04
+  grupo: D
+  pergunta_pt: Qual a diferença entre DELETE e TRUNCATE TABLE quanto ao log de transações
+    e às constraints de chave estrangeira?
+  pergunta_en: What is the difference between DELETE and TRUNCATE TABLE regarding the transaction
+    log and foreign key constraints?
+  tipo: multi_salto
+  categoria: comparacao
+  saltos_esperados: 2
+  justificativa_multihop: >
+    Cada comando tem documento próprio, e a comparação exige combinar os dois.
+  docs_candidatos:
+  - t-sql/statements/truncate-table-transact-sql.md
+  - t-sql/statements/delete-transact-sql.md
+  componentes:
+  - nome: 'log: DELETE registra cada linha; TRUNCATE só a desalocação das páginas'
+    essencial: true
+    trechos:
+    - t-sql/statements/truncate-table-transact-sql.md#chunk3
+  - nome: 'FOREIGN KEY: TRUNCATE não vale em tabela referenciada; usar DELETE'
+    essencial: true
+    trechos:
+    - t-sql/statements/truncate-table-transact-sql.md#chunk4
+  chunks_ouro:
+  - t-sql/statements/truncate-table-transact-sql.md#chunk3
+  - t-sql/statements/truncate-table-transact-sql.md#chunk4
+  chunks_apoio:
+  - t-sql/statements/truncate-table-transact-sql.md#chunk0
+  - t-sql/statements/delete-transact-sql.md#chunk3
+  - t-sql/statements/create-trigger-transact-sql.md#chunk3
+  resposta_resumo: >
+    Log: o DELETE remove as linhas uma a uma e grava uma entrada no log para cada linha; o
+    TRUNCATE TABLE desaloca as páginas de dados e registra só as desalocações, usando muito
+    menos log. Chave estrangeira: o TRUNCATE TABLE não pode ser usado em tabela referenciada
+    por uma FOREIGN KEY (a não ser que a referência seja da própria tabela); nesse caso é
+    preciso usar DELETE, que respeita a constraint linha a linha.
+  verificado: sim
+  escopo: multi_trecho_mesmo_doc
+  trivial_lexical: sim
+- id: D05
+  grupo: D
+  pergunta_pt: Qual a diferença entre colunas incluídas em um índice e colunas que fazem parte
+    da chave do índice?
+  pergunta_en: What is the difference between included columns in an index and columns that
+    are part of the index key?
+  tipo: multi_salto
+  categoria: comparacao
+  saltos_esperados: 2
+  justificativa_multihop: >
+    A sintaxe de INCLUDE está no CREATE INDEX, mas a explicação de por que colunas incluídas
+    não contam para o limite de chave e ficam apenas no nível folha exige o guia de projeto
+    de índices.
+  docs_candidatos:
+  - relational-databases/indexes/create-indexes-with-included-columns.md
+  - t-sql/statements/create-index-transact-sql.md
+  componentes:
+  - nome: 'onde ficam: chave na estrutura do índice; incluídas só no nível folha'
+    essencial: true
+    trechos:
+    - relational-databases/sql-server-index-design-guide.md#chunk4
+    - t-sql/statements/create-index-transact-sql.md#chunk11
+    - t-sql/statements/create-index-transact-sql.md#chunk13
+    - t-sql/statements/create-index-transact-sql.md#chunk2p0
+    - relational-databases/indexes/clustered-and-nonclustered-indexes-described.md#chunk0
+    - relational-databases/indexes/index-properties-f1-help.md#chunk1
+  - nome: incluídas não contam nos limites da chave e aceitam tipos que a chave não aceita
+    essencial: true
+    trechos:
+    - relational-databases/sql-server-index-design-guide.md#chunk4
+    - relational-databases/indexes/create-indexes-with-included-columns.md#chunk0
+  chunks_ouro:
+  - relational-databases/indexes/clustered-and-nonclustered-indexes-described.md#chunk0
+  - relational-databases/indexes/create-indexes-with-included-columns.md#chunk0
+  - relational-databases/indexes/index-properties-f1-help.md#chunk1
+  - relational-databases/sql-server-index-design-guide.md#chunk4
+  - t-sql/statements/create-index-transact-sql.md#chunk11
+  - t-sql/statements/create-index-transact-sql.md#chunk13
+  - t-sql/statements/create-index-transact-sql.md#chunk2p0
+  chunks_apoio:
+  - relational-databases/indexes/create-indexes-with-included-columns.md#chunk1
+  - relational-databases/indexes/create-indexes-with-included-columns.md#chunk2
+  resposta_resumo: >
+    As colunas de chave formam a estrutura do índice: definem a ordem e são usadas para buscar
+    (seek), filtrar e ordenar. As colunas incluídas (INCLUDE) ficam só no nível folha do índice
+    nonclustered e servem para cobrir a consulta, evitando ir à tabela. As incluídas não contam
+    no limite de número de colunas nem no de tamanho da chave (32 colunas e 1.700 bytes no
+    nonclustered, a partir do SQL Server 2016), e aceitam tipos que não podem ser chave, exceto
+    text, ntext e image. Só índices nonclustered têm colunas incluídas.
+  verificado: sim
+  escopo: um_trecho
+  trivial_lexical: nao

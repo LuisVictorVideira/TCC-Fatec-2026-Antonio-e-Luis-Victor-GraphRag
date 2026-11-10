@@ -1,0 +1,28 @@
+# Le as variaveis do .env na raiz do repositorio.
+services:
+  neo4j:
+    image: neo4j:5.19.0
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      NEO4J_AUTH: neo4j/${NEO4J_PASSWORD:?defina NEO4J_PASSWORD no .env}
+    volumes:
+      - neo4j_data:/data
+
+  # Opcional, so para a busca vetorial: docker compose --profile vetorial up -d
+  pgvector:
+    image: pgvector/pgvector:pg16
+    profiles: ["vetorial"]
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: ${PG_USER:-postgres}
+      POSTGRES_PASSWORD: ${PG_PASSWORD:-}
+      POSTGRES_DB: ${PG_DATABASE:-graphrag}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  neo4j_data:
+  postgres_data:

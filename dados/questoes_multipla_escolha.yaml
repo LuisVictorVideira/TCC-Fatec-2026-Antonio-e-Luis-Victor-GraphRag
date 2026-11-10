@@ -1,0 +1,406 @@
+descricao: >
+  Versão de múltipla escolha das 31 perguntas válidas, com os mesmos códigos. Cada questão
+  tem redação própria, quatro alternativas e uma única correta, conferida contra o corpus;
+  fontes são os trechos que sustentam o gabarito, e ressalva registra o que a conferência
+  encontrou de sutil.
+metadados:
+  total: 31
+  alternativas_por_questao: 4
+  acerto_aleatorio: 0.25
+  idioma: en
+  corpus: MicrosoftDocs/sql-docs, pastas relational-databases/ e t-sql/
+  corpus_commit: 928a038ddb0ec8229674c7d0dbe9e529cbd42024
+  distribuicao_gabarito:
+    A: 8
+    B: 7
+    C: 8
+    D: 8
+grupos:
+- grupo: A
+  nome: Controle
+  descricao: Perguntas de controle, sobre fatos pontuais.
+  questoes:
+  - id: A01
+    pergunta: What permission is required to create an index on a table?
+    alternativas:
+      A: SELECT permission on the table
+      B: CONTROL permission on the database
+      C: ALTER permission on the table, or membership in the db_ddladmin role
+      D: Membership in the sysadmin server role
+    gabarito: C
+    fontes:
+    - t-sql/statements/create-index-transact-sql.md#chunk21
+  - id: A03
+    pergunta: When is the FILLFACTOR setting of an index applied?
+    alternativas:
+      A: Continuously, as new rows are inserted into the table
+      B: Every time the index statistics are updated
+      C: Only during a REORGANIZE operation
+      D: Only when the index is created or rebuilt
+    gabarito: D
+    fontes:
+    - relational-databases/indexes/index-properties-f1-help.md#chunk3
+  - id: A04
+    pergunta: What is the maximum key size for a nonclustered index in SQL Server 2016 and
+      later?
+    alternativas:
+      A: 900 bytes
+      B: 1700 bytes
+      C: 8000 bytes
+      D: There is no byte limit, only a limit of 16 key columns
+    gabarito: B
+    fontes:
+    - t-sql/statements/create-index-transact-sql.md#chunk11
+    ressalva: >
+      Armadilha no corpus: o guia de design (relational-databases/sql-server-index-design-guide.md#chunk4)
+      ainda diz 'a total index key size of 900 bytes', frase anterior ao SQL Server 2016.
+  - id: A05
+    pergunta: Which information does sys.dm_db_index_usage_stats track?
+    alternativas:
+      A: The physical fragmentation percentage of each index
+      B: The estimated cost of each query plan that uses the index
+      C: The number of seeks, scans, lookups and updates performed on each index
+      D: The amount of disk space consumed by each index
+    gabarito: C
+    fontes:
+    - relational-databases/system-dynamic-management-views/sys-dm-db-index-usage-stats-transact-sql.md#chunk1
+  - id: A06
+    pergunta: What is the main advantage of rebuilding a clustered index with DROP_EXISTING
+      = ON instead of dropping and recreating it separately?
+    alternativas:
+      A: It removes the requirement for ALTER permission on the table
+      B: It automatically updates all statistics on the database
+      C: It converts the index into a columnstore index in the process
+      D: The nonclustered indexes on the table are not rebuilt twice
+    gabarito: D
+    fontes:
+    - t-sql/statements/create-index-transact-sql.md#chunk15
+    - relational-databases/system-dynamic-management-views/sys-dm-db-index-physical-stats-transact-sql.md#chunk9
+  - id: A07
+    pergunta: What permission is required to run TRUNCATE TABLE?
+    alternativas:
+      A: ALTER permission on the table
+      B: DELETE permission on the table
+      C: CONTROL permission on the schema
+      D: Membership in the db_datawriter role
+    gabarito: A
+    fontes:
+    - t-sql/statements/truncate-table-transact-sql.md#chunk5
+  - id: A08
+    pergunta: Which of the following cannot be used as a key column in an index?
+    alternativas:
+      A: A uniqueidentifier column
+      B: A varchar(max) column
+      C: A deterministic and precise computed column
+      D: A varchar(100) column
+    gabarito: B
+    fontes:
+    - t-sql/statements/create-index-transact-sql.md#chunk2p0
+  - id: A09
+    pergunta: What does the PAD_INDEX option do?
+    alternativas:
+      A: It adds padding bytes to each row so that rows align to page boundaries
+      B: It reserves additional transaction log space during index creation
+      C: It applies the fill factor percentage to the intermediate-level pages of the index,
+        not only to the leaf level
+      D: It pads short key values to a fixed length before storing them
+    gabarito: C
+    fontes:
+    - t-sql/statements/alter-index-transact-sql.md#chunk2p1
+  - id: A10
+    pergunta: Which function should be used instead of @@ROWCOUNT when a statement may affect
+      more than 2,147,483,647 rows?
+    alternativas:
+      A: '@@CURSOR_ROWS'
+      B: COUNT_BIG()
+      C: SET ROWCOUNT
+      D: ROWCOUNT_BIG()
+    gabarito: D
+    fontes:
+    - t-sql/functions/rowcount-transact-sql.md#chunk0
+- grupo: B
+  nome: Impacto e dependência
+  descricao: O efeito de uma operação sobre outro objeto ou recurso; núcleo da hipótese do
+    trabalho.
+  questoes:
+  - id: B01
+    pergunta: When a clustered index is dropped from a table, what happens to the table's
+      storage structure?
+    alternativas:
+      A: The table becomes a heap
+      B: The table is dropped along with the index
+      C: The table is automatically converted to a clustered columnstore
+      D: The table becomes read-only until a new clustered index is created
+    gabarito: A
+    fontes:
+    - t-sql/statements/drop-index-transact-sql.md#chunk3
+  - id: B02
+    pergunta: When a clustered index is dropped, what happens to the existing nonclustered
+      indexes on the same table?
+    alternativas:
+      A: They are dropped together with the clustered index
+      B: They remain unchanged and continue to reference the clustered key
+      C: They are rebuilt so that their row locators use a row identifier instead of the clustered
+        key
+      D: They are disabled until they are manually rebuilt
+    gabarito: C
+    fontes:
+    - relational-databases/indexes/create-clustered-indexes.md#chunk2
+    - relational-databases/indexes/clustered-and-nonclustered-indexes-described.md#chunk0
+    ressalva: >
+      Armadilha no corpus: para VIEW indexada, os nonclustered são removidos junto com o clustered
+      (t-sql/statements/drop-index-transact-sql.md#chunk3). A questão fala em tabela, então
+      C continua correta.
+  - id: B03
+    pergunta: Why does DROP INDEX fail on an index that enforces a PRIMARY KEY constraint?
+    alternativas:
+      A: The index is system-owned and cannot be modified by any statement
+      B: DROP INDEX only operates on nonclustered indexes
+      C: The index must first be disabled with ALTER INDEX
+      D: Constraint indexes must be removed with ALTER TABLE DROP CONSTRAINT
+    gabarito: D
+    fontes:
+    - t-sql/statements/drop-index-transact-sql.md#chunk0
+  - id: B04
+    pergunta: How do rebuilding and reorganizing an index differ in their effect on statistics?
+    alternativas:
+      A: Both operations update statistics with a full scan
+      B: Rebuilding updates statistics with a full scan; reorganizing does not update statistics
+      C: Reorganizing updates statistics; rebuilding leaves them unchanged
+      D: Neither operation has any effect on statistics
+    gabarito: B
+    fontes:
+    - t-sql/statements/alter-index-transact-sql.md#chunk11
+    - relational-databases/indexes/reorganize-and-rebuild-indexes.md#chunk2
+    ressalva: >
+      O full scan vale para índice não particionado; o particionado usa a amostragem padrão.
+      A alternativa B continua a única correta.
+  - id: B05
+    pergunta: What happens when you attempt to drop a column that is part of an index?
+    alternativas:
+      A: The statement fails; the index must be dropped first
+      B: The column is dropped and the index is silently adjusted
+      C: The column is dropped and the index is automatically rebuilt
+      D: The column is marked as unused but remains part of the index
+    gabarito: A
+    fontes:
+    - t-sql/statements/alter-table-transact-sql.md#chunk5p2
+  - id: B06
+    pergunta: How does choosing a wide clustered index key affect the nonclustered indexes
+      on the same table?
+    alternativas:
+      A: It has no effect, because nonclustered indexes are stored independently
+      B: It reduces their size, because rows can be located more efficiently
+      C: It forces them to be rebuilt after every insert
+      D: It increases their size, because the clustered key is stored in every nonclustered
+        index row
+    gabarito: D
+    fontes:
+    - relational-databases/sql-server-index-design-guide.md#chunk3
+  - id: B07
+    pergunta: What must be true about a computed column for it to be used as an index key
+      column?
+    alternativas:
+      A: It must be nullable and persisted
+      B: It must reference only numeric columns from the same table
+      C: It must be deterministic, and precise unless it is PERSISTED
+      D: It must have a default constraint defined on it
+    gabarito: C
+    fontes:
+    - t-sql/statements/create-index-transact-sql.md#chunk12
+    - t-sql/statements/create-table-transact-sql.md#chunk2p0
+    - relational-databases/indexes/indexes-on-computed-columns.md#chunk2
+    - relational-databases/indexes/indexes-on-computed-columns.md#chunk3
+  - id: B08
+    pergunta: Which condition prevents TRUNCATE TABLE from being executed on a table?
+    alternativas:
+      A: The table is referenced by a FOREIGN KEY constraint from another table
+      B: The table has a clustered index defined on it
+      C: The table contains computed columns
+      D: The table has more than one nonclustered index
+    gabarito: A
+    fontes:
+    - t-sql/statements/truncate-table-transact-sql.md#chunk4
+  - id: B09
+    pergunta: In the context of partitioned tables, what is an aligned index?
+    alternativas:
+      A: An index whose key columns appear in the same order as the columns of the table
+      B: An index built on the same partition scheme as its base table, so that its partitions
+        correspond to the table's partitions
+      C: An index that has been defragmented so that its pages are physically contiguous
+      D: An index whose fill factor matches the fill factor of the base table
+    gabarito: B
+    fontes:
+    - relational-databases/partitions/partitioned-tables-and-indexes.md#chunk2
+  - id: B10
+    pergunta: What does a table require before FILESTREAM data can be stored in it?
+    alternativas:
+      A: A clustered columnstore index
+      B: A nonclustered index on the FILESTREAM column
+      C: A partition scheme defined on the primary filegroup
+      D: A uniqueidentifier column with the ROWGUIDCOL property and a UNIQUE constraint
+    gabarito: D
+    fontes:
+    - t-sql/statements/create-table-transact-sql.md#chunk2p2
+    ressalva: >
+      A documentação aceita UNIQUE ou PRIMARY KEY; a alternativa D cita só UNIQUE, o que continua
+      correto.
+  - id: B11
+    pergunta: When using sys.dm_db_index_usage_stats to find unused indexes, what limitation
+      must be taken into account?
+    alternativas:
+      A: It tracks only indexes on user tables, ignoring indexes on system tables
+      B: It records seek operations but not scans or lookups
+      C: Its counters are reset when the instance restarts, so a short uptime can make a used
+        index appear unused
+      D: It requires the database to be in the full recovery model
+    gabarito: C
+    fontes:
+    - relational-databases/system-dynamic-management-views/sys-dm-db-index-usage-stats-transact-sql.md#chunk1
+  - id: B12
+    pergunta: What is the main trade-off of adding a nonclustered index to a frequently modified
+      table?
+    alternativas:
+      A: Every INSERT, UPDATE and DELETE must also maintain the index, increasing write cost
+        and storage
+      B: The index consumes CPU only during SELECT operations
+      C: The table becomes read-only while the index is in place
+      D: Existing queries must be rewritten in order to use the new index
+    gabarito: A
+    fontes:
+    - relational-databases/sql-server-index-design-guide.md#chunk2
+- grupo: C
+  nome: Pré-requisitos e restrições
+  descricao: O que precisa existir, ou ser permitido, para uma operação funcionar.
+  questoes:
+  - id: C01
+    pergunta: Which of the following prevents a clustered columnstore index from being created
+      on a table?
+    alternativas:
+      A: The table contains more than one million rows
+      B: The table contains columns of unsupported data types such as ntext or sql_variant
+      C: The table already has a primary key defined
+      D: The database uses the full recovery model
+    gabarito: B
+    fontes:
+    - t-sql/statements/create-columnstore-index-transact-sql.md#chunk7
+    - t-sql/statements/create-columnstore-index-transact-sql.md#chunk7
+  - id: C02
+    pergunta: What must be created first before any other index can be created on a view?
+    alternativas:
+      A: A nonclustered index on the view's key column
+      B: A filtered index matching the view definition
+      C: A columnstore index covering all view columns
+      D: A unique clustered index
+    gabarito: D
+    fontes:
+    - relational-databases/views/create-indexed-views.md#chunk0
+  - id: C03
+    pergunta: A DBA needs to rebuild a large index without blocking queries against the table.
+      Which option makes this possible, and what is its main constraint?
+    alternativas:
+      A: WITH (ONLINE = ON); it is not available in every edition and has restrictions on
+        certain column types
+      B: WITH (SORT_IN_TEMPDB = ON); it requires additional tempdb space
+      C: WITH (MAXDOP = 1); it limits parallelism in order to reduce contention
+      D: WITH (DROP_EXISTING = ON); it keeps the previous index available during the operation
+    gabarito: A
+    fontes:
+    - relational-databases/indexes/perform-index-operations-online.md#chunk1
+    - relational-databases/indexes/guidelines-for-online-index-operations.md#chunk0
+  - id: C04
+    pergunta: Before Change Data Capture can be enabled on a table, what must happen first?
+    alternativas:
+      A: The table must have a clustered index defined
+      B: The database must be set to the full recovery model
+      C: Change Data Capture must be enabled at the database level
+      D: SQL Server Agent must be stopped
+    gabarito: C
+    fontes:
+    - relational-databases/system-stored-procedures/sys-sp-cdc-enable-table-transact-sql.md#chunk5
+  - id: C05
+    pergunta: Which index types are supported on memory-optimized tables?
+    alternativas:
+      A: The same clustered and nonclustered rowstore indexes used by disk-based tables
+      B: Hash indexes and nonclustered indexes designed specifically for memory-optimized
+        tables
+      C: Clustered columnstore indexes only
+      D: Filtered indexes only
+    gabarito: B
+    fontes:
+    - relational-databases/in-memory-oltp/introduction-to-memory-optimized-tables.md#chunk2
+    - relational-databases/in-memory-oltp/plan-your-adoption-of-in-memory-oltp-features-in-sql-server.md#chunk4
+    ressalva: >
+      Tabelas memory-optimized também aceitam columnstore; a alternativa B está incompleta,
+      mas é a única correta (A, C e D são falsas).
+- grupo: D
+  nome: Comparação
+  descricao: A diferença entre dois recursos ou opções.
+  questoes:
+  - id: D01
+    pergunta: Which statement correctly describes the difference between ALTER INDEX REBUILD
+      and ALTER INDEX REORGANIZE?
+    alternativas:
+      A: REBUILD is always an online operation, whereas REORGANIZE is always offline
+      B: REORGANIZE recreates the index from scratch, whereas REBUILD only compacts existing
+        pages
+      C: REBUILD recreates the index and updates statistics, whereas REORGANIZE defragments
+        the leaf level and does not update statistics
+      D: The two operations are identical apart from the syntax used
+    gabarito: C
+    fontes:
+    - t-sql/statements/alter-index-transact-sql.md#chunk2p0
+    - relational-databases/indexes/reorganize-and-rebuild-indexes.md#chunk2
+  - id: D02
+    pergunta: What is the practical difference between creating a unique index and creating
+      a UNIQUE constraint on the same column?
+    alternativas:
+      A: They enforce uniqueness in the same way; they differ in metadata and in how they
+        are removed
+      B: The constraint enforces uniqueness, whereas the unique index only speeds up lookups
+      C: The unique index permits multiple NULL values, whereas the constraint permits none
+      D: The constraint always creates a clustered index, whereas a unique index cannot be
+        clustered
+    gabarito: A
+    fontes:
+    - relational-databases/indexes/create-unique-indexes.md#chunk0
+    - t-sql/statements/drop-index-transact-sql.md#chunk8
+  - id: D03
+    pergunta: In which situation is a filtered index preferable to an indexed view?
+    alternativas:
+      A: When the data to be indexed spans several tables that must be joined
+      B: When aggregate values need to be precomputed and stored
+      C: When the query must return rows from a remote server
+      D: When the subset of rows to index comes from a single table and can be defined by
+        a simple WHERE predicate
+    gabarito: D
+    fontes:
+    - relational-databases/indexes/create-filtered-indexes.md#chunk2
+  - id: D04
+    pergunta: How do DELETE and TRUNCATE TABLE differ in terms of transaction logging?
+    alternativas:
+      A: TRUNCATE cannot be rolled back, whereas DELETE can
+      B: DELETE logs each row deletion individually, whereas TRUNCATE logs only the page deallocations
+      C: Both log each removed row identically, but TRUNCATE runs in its own transaction
+      D: TRUNCATE writes to the log only when the database uses the simple recovery model
+    gabarito: B
+    fontes:
+    - t-sql/statements/truncate-table-transact-sql.md#chunk3
+  - id: D05
+    pergunta: How do included columns in a nonclustered index differ from key columns?
+    alternativas:
+      A: They are stored only at the leaf level, do not count toward the index key size limit,
+        and cannot be used in seek predicates
+      B: They are stored at every level of the index, whereas key columns are stored only
+        at the leaf level
+      C: They must have the same data type as the key columns of the index
+      D: They are limited to a maximum of two columns per index
+    gabarito: A
+    fontes:
+    - relational-databases/indexes/create-indexes-with-included-columns.md#chunk1
+    - t-sql/statements/create-index-transact-sql.md#chunk11
+    - relational-databases/sql-server-index-design-guide.md#chunk4
+    ressalva: >
+      Nível folha e limite de chave estão escritos; 'não servem a predicados de busca (seek)'
+      não aparece com essas palavras, só de forma indireta no guia de design. A continua a
+      única correta.

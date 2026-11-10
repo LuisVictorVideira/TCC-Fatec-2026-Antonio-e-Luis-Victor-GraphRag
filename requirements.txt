@@ -1,0 +1,15 @@
+# Versoes fixadas: mudam os resultados (blocos de codigo e pontuacao do BM25)
+markdown-it-py==4.0.0
+bm25s==0.3.13
+PyStemmer==3.1.0
+
+neo4j
+pyahocorasick
+numpy
+PyYAML
+python-dotenv
+requests
+pytest
+
+# Opcional, so para a busca vetorial:
+# psycopg[binary]
